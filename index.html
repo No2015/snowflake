@@ -61,7 +61,7 @@ $(function(){
 		},fps);
 	}
 	function create(c,imgs){
-		var img = imgs[(Math.random()*3)>>0], left = (Math.random()*c.width/3*2)>>0, top = -img.height, path = Math.random()*5;
+		var img = imgs[(Math.random()*3)>>0], left = (Math.random()*c.width/3*2)>>0, top = -img.height, path = (Math.random()*5)>>0;
 		return [img,left,top,path];
 	}
 	function draw(c,cxt,fps){
