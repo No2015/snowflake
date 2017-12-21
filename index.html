@@ -59,7 +59,7 @@ $(function(){
 		var density = 1;//雪花密集度 必须大于0
 
 		setInterval(function(){//生成雪花 
-			snowflake = create(c,imgs,rank);
+			snowflake = create(c,imgs,rank);//[img,x,y,path,scale]
 			matrix.push(snowflake);
 		},1000/speed/density);
 
@@ -78,13 +78,13 @@ $(function(){
 		},1000/fps);
 	}
 	function create(c,imgs,rank){
-		var img = imgs[(Math.random()*3)>>0], left = (Math.random()*c.width/3*2)>>0, top = -img.height, path = (Math.random()*rank)-0.5;
-		return [img,left,top,path];
+		var img = imgs[(Math.random()*3)>>0], left = (Math.random()*c.width/3*2)>>0, top = -img.height, path = (Math.random()*rank)-0.5, scale = Math.random()*0.5+0.5;
+		return [img,left,top,path,scale];
 	}
 	function draw(c,cxt,matrix){
 		cxt.clearRect(0,0,c.width,c.height);
 		for(var i = 0; i < matrix.length; i++){
-			cxt.drawImage(matrix[i][0],matrix[i][1],matrix[i][2]);			
+			cxt.drawImage(matrix[i][0],matrix[i][1],matrix[i][2],matrix[i][0].width*matrix[i][4],matrix[i][0].height*matrix[i][4]);
 		}
 	}
 	start();
