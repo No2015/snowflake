@@ -3,7 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>雪花</title>
-<script type="text/javascript" src="jquery-1.7.2.min.js"></script>
 <style>
 body{margin: 0;padding: 0;background: #000;}
 #myCanvas{
@@ -15,11 +14,10 @@ body{margin: 0;padding: 0;background: #000;}
 </style>
 
 <script type="text/javascript">
-$(function(){	
 	function start(){
 		var imgs = [];
-		var srcs = ['1.png','2.png','3.png'];//同源策略限制只能加载本地图片
-		srcs.forEach(function(value,index,array){
+		var srcs = ['1.png', '2.png', '3.png'];//同源策略限制只能加载本地图片 
+		srcs.forEach(function(value, index, array){
 			var img = new Image();
 			img.onload = function(){
 				imgs.push(this);
@@ -46,24 +44,24 @@ $(function(){
 	function init(imgs){
 		var c = document.getElementById("myCanvas");
 		var cxt = c.getContext("2d");
-		var height = $(window).height();
-		var width = $(window).width();
+		var height = window.innerHeight;
+		var width = window.innerWidth;
 		c.width = width;
 		c.height = height;
 
 		var rank = 5;//轨道数量
 		var snowflake = [];//雪花	
 		var matrix = [];//雪花矩阵
-		var fps = 50;//帧数 最大100帧
+		var fps = 60;//帧数 最大100帧
 		var speed = 50;//雪花移动速度px/s 最大100px/s
 		var density = 1;//雪花密集度 必须大于0
 
 		setInterval(function(){//生成雪花 
-			snowflake = create(c,imgs,rank);//[img,x,y,path,scale]
+			snowflake = create(c, imgs, rank);//[img, x, y, path, scale, interval]
 			matrix.push(snowflake);
-		},1000/speed/density);
+		}, 1000/speed/density);
 
-		setInterval(function(){//雪花飘落
+		setInterval(function(){//雪花飘落 & 绘画
 			for(var i = 0; i < matrix.length; i++){
 				matrix[i][1] += matrix[i][3]/100*speed;
 				matrix[i][2] += (rank-matrix[i][3])/100*speed;
@@ -71,24 +69,38 @@ $(function(){
 			matrix = matrix.filter(function(value){
 				return value[1] < c.width && value[2] < c.height;
 			});
-		},10);
-
-		setInterval(function(){//绘画
-			draw(c,cxt,matrix);
-		},1000/fps);
+			draw(c, cxt, matrix);
+		}, 1000/fps);
 	}
-	function create(c,imgs,rank){
-		var img = imgs[(Math.random()*3)>>0], scale = Math.random()*0.5+0.5, left = (Math.random()*c.width/3*2)>>0, top = -img.height*scale, path = (Math.random()*rank)-0.5;
-		return [img,left,top,path,scale];
+	function create(c, imgs, rank){
+		var img = imgs[(Math.random()*3)>>0];
+		var scale = Math.random()*0.5+0.5;
+		var left = (Math.random()*c.width/3*2)>>0;
+		var top = -img.height*scale;
+		var path = (Math.random()*rank)-0.5;
+		var interval = 1;//自增的旋转角度
+		return [img, left, top, path, scale, interval];
 	}
-	function draw(c,cxt,matrix){
-		cxt.clearRect(0,0,c.width,c.height);
+	function draw(c, cxt, matrix){
+		cxt.clearRect(0, 0, c.width, c.height);
 		for(var i = 0; i < matrix.length; i++){
-			cxt.drawImage(matrix[i][0],matrix[i][1],matrix[i][2],matrix[i][0].width*matrix[i][4],matrix[i][0].height*matrix[i][4]);
+			let img =  matrix[i][0]
+			let left = matrix[i][1]
+			let top = matrix[i][2]
+			let interval = matrix[i][5]
+			let width = matrix[i][0].width*matrix[i][4]
+			let height = matrix[i][0].height*matrix[i][4]
+			let roeate = Math.PI/180*(matrix[i][4]/2)*interval
+			cxt.translate(left, top)
+			cxt.rotate(roeate)
+			cxt.drawImage(img, 0, 0, width, height);
+			cxt.rotate(-roeate)
+			cxt.translate(-left, -top)
+			interval ++
+			matrix[i][5] = interval
 		}
 	}
 	start();
-});
 </script>
 
 </head>
