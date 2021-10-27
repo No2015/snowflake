@@ -16,7 +16,7 @@ body{margin: 0;padding: 0;background: #000;}
 <script type="text/javascript">
 	function start(){
 		var imgs = [];
-		var srcs = ['1.png', '2.png', '3.png'];//同源策略限制只能加载本地图片 
+		var srcs = ['1.png?v=20211027', '2.png?v=20211027', '3.png?v=20211027'];//同源策略限制只能加载本地图片 
 		srcs.forEach(function(value, index, array){
 			var img = new Image();
 			img.onload = function(){
